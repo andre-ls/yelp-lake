@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession, functions as f
-from pyspark.sql.types import StructType,StructField,StringType,IntegerType,TimestampType,FloatType,ArrayType,BooleanType
+from pyspark.sql.types import StructType,StructField,StringType,IntegerType,TimestampType,FloatType,ArrayType,DoubleType
 
 spark = SparkSession.builder.appName("Bronze Schemas").getOrCreate()
 
@@ -94,13 +94,26 @@ tipSchema = StructType([
     ])
 
 userSchema = StructType([
-        StructField("user_id",StringType(),False),
-        StructField("name",StringType(),False),
-        StructField("review_count",IntegerType(),False),
-        StructField("yelping_since",TimestampType(),False),
-        StructField("useful",IntegerType(),False),
-        StructField("funny",IntegerType(),False),
+        StructField("average_stars",DoubleType(),False),
+        StructField("compliment_cool",IntegerType(),False),
+        StructField("compliment_cute",IntegerType(),False),
+        StructField("compliment_funny",IntegerType(),False),
+        StructField("compliment_hot",IntegerType(),False),
+        StructField("compliment_list",IntegerType(),False),
+        StructField("compliment_more",IntegerType(),False),
+        StructField("compliment_note",IntegerType(),False),
+        StructField("compliment_photos",IntegerType(),False),
+        StructField("compliment_plain",IntegerType(),False),
+        StructField("compliment_profile",IntegerType(),False),
+        StructField("compliment_writer",IntegerType(),False),
         StructField("cool",IntegerType(),False),
         StructField("elite",StringType(),False),
-        StructField("friends",StringType(),False)
+        StructField("fans",IntegerType(),False),
+        StructField("friends",StringType(),False),
+        StructField("funny",IntegerType(),False),
+        StructField("name",StringType(),False),
+        StructField("review_count",IntegerType(),False),
+        StructField("useful",IntegerType(),False),
+        StructField("user_id",StringType(),False),
+        StructField("yelping_since",TimestampType(),False)
     ])
