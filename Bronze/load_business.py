@@ -23,5 +23,6 @@ spark.sparkContext\
 
 df = spark.read.schema(businessSchema).json(awsS3Directory + "/Raw/yelp_academic_dataset_business.json")
 
+df = df.where("attributes is not null")
 df.printSchema()
 df.show(n=5,truncate=False,vertical=True)
