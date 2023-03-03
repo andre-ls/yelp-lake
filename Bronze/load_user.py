@@ -23,5 +23,4 @@ spark.sparkContext\
 
 df = spark.read.schema(userSchema).json(awsS3Directory + "/Raw/yelp_academic_dataset_user.json")
 
-df.printSchema()
-df.show(n=5,truncate=True,vertical=True)
+df.write.parquet(awsS3Directory + "/Bronze/user_data")

@@ -23,5 +23,4 @@ spark.sparkContext\
 
 df = spark.read.schema(businessSchema).json(awsS3Directory + "/Raw/yelp_academic_dataset_business.json")
 
-df.printSchema()
-df.show(n=5,truncate=False,vertical=True)
+df.write.parquet(awsS3Directory + "/Bronze/business_data")
