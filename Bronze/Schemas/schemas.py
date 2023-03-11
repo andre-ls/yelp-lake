@@ -77,7 +77,7 @@ reviewSchema = StructType([
         StructField("review_id",StringType(),False),
         StructField("user_id",StringType(),False),
         StructField("business_id",StringType(),False),
-        StructField("stars",IntegerType(),False),
+        StructField("stars",FloatType(),False),
         StructField("useful",IntegerType(),False),
         StructField("funny",IntegerType(),False),
         StructField("cool",IntegerType(),False),
