@@ -2,14 +2,13 @@ import os
 import re
 from dotenv import load_dotenv
 from pyspark.sql import SparkSession, functions as f
-from pyspark.ml.feature import StopWordsRemover
 
 load_dotenv()
 awsAccessKey = os.environ.get('AWS_ACCESS_KEY')
 awsAccessSecret = os.environ.get('AWS_ACCESS_SECRET')
 awsS3Directory = os.environ.get('AWS_S3_DIRECTORY')
 
-spark = SparkSession.builder.appName("Review and Tips Gold View").getOrCreate()
+spark = SparkSession.builder.appName("Reviews Gold View").getOrCreate()
 
 spark.sparkContext\
      ._jsc.hadoopConfiguration().set("fs.s3a.access.key", awsAccessKey)
