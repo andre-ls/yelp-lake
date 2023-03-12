@@ -29,7 +29,4 @@ df = df.groupBy("business_id")\
             f.flatten(f.collect_list("filtered_text")).alias("filtered_text")\
         )
 
-df.show(n=5,vertical=True,truncate=True)
-
-#df.write.parquet(awsS3Directory + "/Gold/reviews_tips_view")
-
+df.write.parquet(awsS3Directory + "/Gold/reviews_view")

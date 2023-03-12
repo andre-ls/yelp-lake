@@ -23,8 +23,4 @@ df = spark.read.option("inferSchema","true").parquet(awsS3Directory + "/Silver/t
 
 df = df.groupBy(["business_id","user_id"]).count()
 
-df.show(n=30,vertical=True,truncate=False)
-df.printSchema()
-
-#df.write.parquet(awsS3Directory + "/Gold/reviews_tips_view")
-
+df.write.parquet(awsS3Directory + "/Gold/frequent_customers_view")
