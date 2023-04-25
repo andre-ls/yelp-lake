@@ -14,6 +14,16 @@ conn = connect(aws_access_key_id=awsAccessKey,
                  region_name="sa-east-1"
                 )
 
+def getRandomBusinessId():
+
+    query = """
+        SELECT b.business_id
+        FROM yelp_data.business_data b
+        ORDER BY RAND()
+        LIMIT 1
+    """
+    return pd.read_sql_query(query,conn)["business_id"][0]
+
 def getBusinessNames(search_query):
 
     query = """
@@ -47,6 +57,7 @@ def getReviewData(business_id):
 
     query = """
         SELECT r.avg_stars,
+                r.number_reviews,
                 r.filtered_text
         FROM yelp_data.business_data b
         INNER JOIN yelp_data.reviews_view r ON b.business_id = r.business_id
@@ -57,12 +68,20 @@ def getReviewData(business_id):
 
 def getCheckinData(business_id):
 
+    #query = """
+    #    SELECT c.date,
+    #            c.count
+    #    FROM yelp_data.business_data b
+    #    INNER JOIN yelp_data.checkins_view c ON b.business_id = c.business_id
+    #    WHERE b.business_id = '{business_id}'
+    #"""
+
     query = """
-        SELECT c.date,
-                c.count
-        FROM yelp_data.business_data b
-        INNER JOIN yelp_data.checkins_view c ON b.business_id = c.business_id
-        WHERE b.business_id = '{business_id}'
+    SELECT SUBSTRING(c.date, 1, 7) as month,
+                sum(c.count) as counts
+        FROM yelp_data.checkins_view c 
+        WHERE c.business_id = '{business_id}'
+        GROUP BY SUBSTRING(c.date, 1, 7)
     """
 
     return pd.read_sql_query(query.format(business_id = business_id),conn)
@@ -92,6 +111,21 @@ def getFrequentCustomersData(business_id):
         INNER JOIN yelp_data.frequent_customers_view f ON b.business_id = f.business_id
         INNER JOIN yelp_data.user_data u ON u.user_id = f.user_id
         WHERE b.business_id = '{business_id}'
+    """
+
+    return pd.read_sql_query(query.format(business_id = business_id),conn)
+
+def getReviewsDistribution(business_id):
+    query = """
+    SELECT DISTINCT r1.stars, COALESCE(g.count,0) AS count 
+    FROM yelp_data.review_data r1
+    LEFT JOIN (
+        SELECT r2.stars,count(r2.stars) as count
+        FROM yelp_data.review_data r2
+        WHERE r2.business_id = '{business_id}'
+        GROUP BY stars) g 
+    ON r1.stars = g.stars
+    GROUP BY r1.stars, g.count
     """
 
     return pd.read_sql_query(query.format(business_id = business_id),conn)
