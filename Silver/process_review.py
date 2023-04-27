@@ -23,18 +23,26 @@ spark.sparkContext\
 df = spark.read.option("inferSchema","true").parquet(awsS3Directory + "/Bronze/review_data")
 
 def removeReviewStopWords(df):
-    df = removeTextPunctuation(df)
-    df = df.withColumn("no_punc_text",f.split(f.col("no_punc_text")," "))
-    remover = StopWordsRemover(inputCol="no_punc_text",outputCol="filtered_text")
+    df = cleanText(df)
+    remover = StopWordsRemover(inputCol="clean_text",outputCol="filtered_text")
 
     df = remover.transform(df)
-    return df.drop("no_punc_text","text")
+    return df.drop("clean_text","text")
 
-def removeTextPunctuation(df):
-    regex = r',|\.|&|\\|\||-|_'
-    df = df.withColumn("no_punc_text",f.regexp_replace(f.col("text"), regex, ''))
+def cleanText(df):
+    regex = r',|\.|&|-|_|\'.|\"|\?|\!'
+    df = df.withColumn("clean_text",f.regexp_replace(f.col("text"), regex, ''))
+    df = df.withColumn("clean_text",f.regexp_replace(f.col("clean_text"), r'[\n]', ' '))
+    df = df.withColumn("clean_text",f.lower(f.col("clean_text")))
+    df = df.withColumn("clean_text",f.split(f.col("clean_text")," "))
+    df = df.withColumn("clean_text",f.filter(f.col("clean_text"),lambda x: x!=''))
     return df
+
+def countWordsMap(df):
+    counts = df.rdd.flatMap(lambda a: [(w,1) for w in a.filtered_text]).reduceByKey(lambda a,b: a+b).collect()
+    print(counts)
 
 df = removeReviewStopWords(df)
 
-df.write.parquet(awsS3Directory + "/Silver/review_data")
+df.write.mode("overwrite").parquet(awsS3Directory + "/Silver/review_data")
+

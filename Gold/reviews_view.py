@@ -23,6 +23,7 @@ df = spark.read.option("inferSchema","true").parquet(awsS3Directory + "/Silver/r
 
 df = df.groupBy("business_id")\
        .agg(f.avg("stars").alias("avg_stars"),\
+            f.count("*").alias("number_reviews"),\
             f.avg("useful").alias("avg_useful"),\
             f.avg("funny").alias("avg_funny"),\
             f.avg("cool").alias("avg_cool"),\
