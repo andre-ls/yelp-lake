@@ -1,12 +1,10 @@
-import os
-from dotenv import load_dotenv
 from pyathena import connect
 import pandas as pd
+import streamlit as st
 
-load_dotenv()
-awsAccessKey = os.environ.get('AWS_ACCESS_KEY')
-awsAccessSecret = os.environ.get('AWS_ACCESS_SECRET')
-awsS3Directory = os.environ.get('AWS_S3_DIRECTORY')
+awsAccessKey = st.secrets['AWS_ACCESS_KEY']
+awsAccessSecret = st.secrets['AWS_ACCESS_SECRET']
+awsS3Directory = st.secrets['AWS_S3_DIRECTORY']
 
 conn = connect(aws_access_key_id=awsAccessKey,
                  aws_secret_access_key=awsAccessSecret,
