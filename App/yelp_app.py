@@ -14,7 +14,7 @@ st.set_page_config(layout='wide')
 # Introduction
 column_image, column_title = st.columns([0.3,2.0])
 with column_image:
-    st.image('/App/Images/yelp_logo.png',width=200)
+    st.image('yelp_logo.png',width=200)
 
 with column_title:
     st.title('Yelp Business Data Insights')
