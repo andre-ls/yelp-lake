@@ -74,12 +74,20 @@ def getCheckinData(business_id):
     #    WHERE b.business_id = '{business_id}'
     #"""
 
+    #query = """
+    #SELECT SUBSTRING(c.date, 1, 7) as month,
+    #            sum(c.count) as counts
+    #    FROM yelp_data.checkins_view c 
+    #    WHERE c.business_id = '{business_id}'
+    #    GROUP BY SUBSTRING(c.date, 1, 7)
+    #"""
+
     query = """
-    SELECT SUBSTRING(c.date, 1, 7) as month,
-                sum(c.count) as counts
+    SELECT c.date as date,
+        c.count as counts
         FROM yelp_data.checkins_view c 
         WHERE c.business_id = '{business_id}'
-        GROUP BY SUBSTRING(c.date, 1, 7)
+        ORDER BY c.date DESC
     """
 
     return pd.read_sql_query(query.format(business_id = business_id),conn)
@@ -99,7 +107,7 @@ def getTipData(business_id):
 def getFrequentCustomersData(business_id):
 
     query = """
-        SELECT u.name, 
+        SELECT u.name as Name, 
                 u.cool, 
                 u.funny, 
                 u.review_count, 
@@ -109,6 +117,7 @@ def getFrequentCustomersData(business_id):
         INNER JOIN yelp_data.frequent_customers_view f ON b.business_id = f.business_id
         INNER JOIN yelp_data.user_data u ON u.user_id = f.user_id
         WHERE b.business_id = '{business_id}'
+        ORDER BY f.count DESC
     """
 
     return pd.read_sql_query(query.format(business_id = business_id),conn)

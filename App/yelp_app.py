@@ -35,17 +35,37 @@ businessId = st_searchbox(
     default=randomBusinessId
 )
 
-# Data Visualization
+# Data Loading and Processing
+
+def processTagList(tagList):
+    return [(x,"") for x in tagList]
+
+def processCheckinTimeSeries(df):
+    df.index = pd.to_datetime(df["date"])
+    idx = pd.date_range(min(df.date), max(df.date))
+    df = df.drop("date",axis=1)
+    df = df.reindex(idx, fill_value=0)
+
+    return df.groupby(pd.Grouper(freq='M')).sum("counts")
+
+def processFrequentCustomersData(df):
+    df.index = df.index + 1
+    df["yelping_since"] = pd.to_datetime(df["yelping_since"]).dt.strftime('%m/%d/%Y')
+    df.columns = ["Name","Cool","Funny","Reviews","Yelping Since","Checkins"]
+    return df
 
 businessData = athena.getBusinessData(businessId)
 reviewData = athena.getReviewData(businessId)
 reviewDistribution = athena.getReviewsDistribution(businessId)
 checkinData = athena.getCheckinData(businessId)
 frequentCustomersData = athena.getFrequentCustomersData(businessId)
-frequentCustomersData.index = frequentCustomersData.index + 1
 
-def processTagList(tagList):
-    return [(x,"") for x in tagList]
+checkinData = processCheckinTimeSeries(checkinData)
+frequentCustomersData = processFrequentCustomersData(frequentCustomersData)
+categoriesTagList = processTagList(businessData["categories"][0].split(", "))
+attributesTagList = processTagList(businessData["attributes_list"][0].split(","))
+
+# Data Visualization
 
 col1, col2, col3 = st.columns(3)
 
@@ -63,11 +83,11 @@ with col1:
 
     st.markdown("#### Categories")
 
-    annotated_text(processTagList(businessData["categories"][0].split(", ")))
+    annotated_text(categoriesTagList)
 
     st.markdown("#### Attributes")
 
-    annotated_text(processTagList(businessData["attributes_list"][0].split(",")))
+    annotated_text(attributesTagList)
 
     st.markdown("#### Location")
 
@@ -97,15 +117,16 @@ with col2:
 
     st.markdown("#### Checkins Time Series")
 
-    fig = px.bar(
+    fig = px.line(
         checkinData,
-        x="month",
+        x=checkinData.index,
         y="counts",
         color_discrete_sequence =['#FF1A1A'],
         labels={
              "month": "Months",
              "counts": "Checkins"
         },
+        range_y=[0,checkinData["counts"].max()],
         height=450
     )
 
@@ -122,7 +143,6 @@ with col3:
     plt.axis("off")
     plt.imshow(wordcloud, interpolation='spline36')
     st.pyplot(fig)
-
 
     st.markdown("#### Top 10 Most Frequent Customers")
     st.dataframe(frequentCustomersData.head(10))
