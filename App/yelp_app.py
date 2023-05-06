@@ -14,7 +14,7 @@ st.set_page_config(layout='wide')
 # Introduction
 column_image, column_title = st.columns([0.3,2.0])
 with column_image:
-    st.image('yelp_logo.png',width=200)
+    st.image('../yelp_logo.png',width=200)
 
 with column_title:
     st.title('Yelp Business Data Insights')
@@ -136,12 +136,12 @@ with col3:
 
     wordsList = reviewData["filtered_text"][0].replace("[","").replace("]","")
 
-    wordcloud = WordCloud(height=280,background_color=None,mode="RGBA").generate(wordsList)
+    wordcloud = WordCloud(width=1600, height=1100,background_color=None,mode="RGBA").generate(wordsList)
 
     st.markdown("#### Most Commmon Words on Reviews")
-    fig = plt.figure(dpi=2400,frameon=False)
+    fig = plt.figure(figsize=(25,25),frameon=False)
     plt.axis("off")
-    plt.imshow(wordcloud, interpolation='spline36')
+    plt.imshow(wordcloud, interpolation='catrom')
     st.pyplot(fig)
 
     st.markdown("#### Top 10 Most Frequent Customers")
