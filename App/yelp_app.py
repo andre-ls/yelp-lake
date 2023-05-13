@@ -43,12 +43,14 @@ def processTagList(tagList):
     return [(x,"") for x in tagList]
 
 def processCheckinTimeSeries(df):
-    df.index = pd.to_datetime(df["date"])
-    idx = pd.date_range(min(df.date), max(df.date))
-    df = df.drop("date",axis=1)
-    df = df.reindex(idx, fill_value=0)
-
-    return df.groupby(pd.Grouper(freq='M')).sum("counts")
+    if(df.empty == False):
+        df.index = pd.to_datetime(df["date"])
+        idx = pd.date_range(min(df.date), max(df.date))
+        df = df.drop("date",axis=1)
+        df = df.reindex(idx, fill_value=0)
+        return df.groupby(pd.Grouper(freq='M')).sum("counts")
+    else:
+        return df
 
 def processFrequentCustomersData(df):
     df.index = df.index + 1
