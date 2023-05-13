@@ -20,9 +20,11 @@ with column_title:
     st.title('Yelp Business Data Insights')
 
 # Search
+df_search = athena.getBusinessNames()
+
 def getBusinessNames(searchQuery):
-    df = athena.getBusinessNames(searchQuery)
-    return list(zip(df['query_results'], df['business_id']))
+    df_results = df_search[df_search['query_results'].str.match(searchQuery)]
+    return list(zip(df_results['query_results'], df_results['business_id']))
 
 randomBusinessId = athena.getRandomBusinessId()
 

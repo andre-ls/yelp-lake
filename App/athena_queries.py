@@ -22,16 +22,17 @@ def getRandomBusinessId():
     """
     return pd.read_sql_query(query,conn)["business_id"][0]
 
-def getBusinessNames(search_query):
+@st.cache_data
+def getBusinessNames():
 
     query = """
         SELECT b.business_id,
         b.name || ' - ' || b.address || ', ' || b.city || ', ' || b.state AS query_results
         FROM yelp_data.business_data b
-        WHERE b.name LIKE '%{search_query}%'
     """
+        #WHERE b.name LIKE '%{search_query}%'
 
-    return pd.read_sql_query(query.format(search_query = search_query),conn)
+    return pd.read_sql_query(query,conn)
 
 def getBusinessData(business_id):
 
