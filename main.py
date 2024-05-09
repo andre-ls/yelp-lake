@@ -1,9 +1,8 @@
 import os
 import re
 from dotenv import load_dotenv
-from pyspark.sql import SparkSession, functions as f
-from pyspark.sql.types import StringType, ArrayType
-from Schemas.schemas import businessSchema
+from pyspark.sql import SparkSession
+from Bronze.ingestion import ingestData
 
 load_dotenv()
 awsAccessKey = os.environ.get('AWS_ACCESS_KEY')
@@ -21,6 +20,6 @@ spark.sparkContext\
 spark.sparkContext\
       ._jsc.hadoopConfiguration().set("fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
 
-df = spark.read.schema(businessSchema).json(awsS3Directory + "/Raw/yelp_academic_dataset_business.json")
-
-df.write.parquet(awsS3Directory + "/Bronze/business_data")
+if __name__ == "__main__":
+    spark = SparkSession.builder.appName("Yelp ETL").getOrCreate()
+    ingestData(spark)
