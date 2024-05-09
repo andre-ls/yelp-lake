@@ -2,6 +2,8 @@ FROM bitnami/spark
 
 WORKDIR /opt/bitnami/spark/yelp
 
-RUN pip install python-dotenv
+COPY ./requirements.txt .
+
+RUN pip install -r requirements.txt
 
 CMD spark-submit --jars /jars/*.jar main.py
