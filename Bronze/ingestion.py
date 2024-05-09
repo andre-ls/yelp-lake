@@ -1,7 +1,8 @@
 import os
-from pyspark.sql import import SparkSession
+from dotenv import load_dotenv
 from Schemas.schemas import *
 
+load_dotenv()
 bucketUrl = os.environ.get('BUCKET_URL')
 
 def ingest(spark, schema, rawDirectory, bronzeDirectory):
