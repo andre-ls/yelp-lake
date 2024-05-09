@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from Schemas.schemas import *
+from Bronze.Schemas.schemas import *
 
 load_dotenv()
 bucketUrl = os.environ.get('BUCKET_URL')
