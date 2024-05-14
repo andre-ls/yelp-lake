@@ -7,7 +7,8 @@ bucketUrl = os.environ.get('BUCKET_URL')
 
 def ingest(spark, schema, rawDirectory, bronzeDirectory):
     df = spark.read.schema(schema).json(bucketUrl + rawDirectory)
-    df.write.parquet(bucketUrl + bronzeDirectory)
+    df.write.mode('overwrite').parquet(bucketUrl + bronzeDirectory)
+    df.unpersist()
 
 def ingestBusinessData(spark):
     ingest(spark, businessSchema, "/Raw/yelp_academic_dataset_business.json", "/Bronze/business_data")
