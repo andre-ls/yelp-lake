@@ -13,17 +13,17 @@ if __name__ == "__main__":
     spark = SparkSession.builder.appName("Yelp ETL").getOrCreate()
 
     # Bronze Jobs
-    ingestData(spark)
+    #ingestData(spark)
 
     # Silver Jobs
-    process_business.process(spark)
-    process_checkin.process(spark)
-    process_review.process(spark)
-    process_tip.process(spark)
-    process_user.process(spark)
+    #process_business.process(spark)
+    #process_checkin.process(spark)
+    #process_review.process(spark)
+    #process_tip.process(spark)
+    #process_user.process(spark)
 
     # Gold Jobs
-    checkins_view.createView(spark)
-    frequent_customers_view.createView(spark)
+    #checkins_view.createView(spark)
+    #frequent_customers_view.createView(spark)
     reviews_view.createView(spark)
-    tips_view.createView(spark)
+    #tips_view.createView(spark)
