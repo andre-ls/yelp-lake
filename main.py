@@ -7,13 +7,13 @@ from Silver import process_business, process_checkin, process_review, process_ti
 from Gold import checkins_view, frequent_customers_view, reviews_view, tips_view
 
 load_dotenv()
-spark = SparkSession.builder.appName("Business Data Load").getOrCreate()
+bucketUrl = os.environ.get("BUCKET_URL")
 
 if __name__ == "__main__":
     spark = SparkSession.builder.appName("Yelp ETL").getOrCreate()
 
     # Bronze Jobs
-    ingestData(spark)
+    ingestData(spark, bucketUrl)
 
     # Silver Jobs
     process_business.process(spark)
