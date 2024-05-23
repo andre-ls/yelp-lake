@@ -1,9 +1,4 @@
-import os
-from dotenv import load_dotenv
 from Bronze.Schemas.schemas import *
-
-load_dotenv()
-bucketUrl = os.environ.get('BUCKET_URL')
 
 class Ingestion:
     def __init__(self, spark, schema, bucketUrl, rawDirectory, bronzeDirectory):
