@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import plotly.express as px
-import athena_queries as athena
+import bq_queries as bigquery
 import streamlit as st
 from streamlit_searchbox import st_searchbox
 from annotated_text import annotated_text
@@ -14,26 +14,25 @@ st.set_page_config(layout='wide')
 # Introduction
 column_image, column_title = st.columns([0.3,2.0])
 with column_image:
-    st.image('yelp_logo.png',width=200)
+    st.image('../yelp_logo.png',width=200)
 
 with column_title:
     st.title('Yelp Business Data Insights')
 
 # Search
-df_search = athena.getBusinessNames()
+df_search = bigquery.getBusinessNames()
 
 def getBusinessNames(searchQuery):
     df_results = df_search[df_search['query_results'].str.match(searchQuery)]
     return list(zip(df_results['query_results'], df_results['business_id']))
 
-randomBusinessId = athena.getRandomBusinessId()
+randomBusinessId = bigquery.getRandomBusinessId()
 
 businessId = st_searchbox(
     search_function=getBusinessNames,
     placeholder="Enter Business Name...",
     label="Search Business",
     clear_on_submit=False,
-    clearable=True,
     default=randomBusinessId
 )
 
@@ -48,7 +47,7 @@ def processCheckinTimeSeries(df):
         idx = pd.date_range(min(df.date), max(df.date))
         df = df.drop("date",axis=1)
         df = df.reindex(idx, fill_value=0)
-        return df.groupby(pd.Grouper(freq='M')).sum("counts")
+        return df.groupby(pd.Grouper(freq='ME')).sum("counts")
     else:
         return df
 
@@ -58,11 +57,11 @@ def processFrequentCustomersData(df):
     df.columns = ["Name","Cool","Funny","Reviews","Yelping Since","Checkins"]
     return df
 
-businessData = athena.getBusinessData(businessId)
-reviewData = athena.getReviewData(businessId)
-reviewDistribution = athena.getReviewsDistribution(businessId)
-checkinData = athena.getCheckinData(businessId)
-frequentCustomersData = athena.getFrequentCustomersData(businessId)
+businessData = bigquery.getBusinessData(businessId)
+reviewData = bigquery.getReviewData(businessId)
+reviewDistribution = bigquery.getReviewsDistribution(businessId)
+checkinData = bigquery.getCheckinData(businessId)
+frequentCustomersData = bigquery.getFrequentCustomersData(businessId)
 
 checkinData = processCheckinTimeSeries(checkinData)
 frequentCustomersData = processFrequentCustomersData(frequentCustomersData)
@@ -138,8 +137,11 @@ with col2:
 
 with col3:
 
-    wordsList = reviewData["filtered_text"][0].replace("[","").replace("]","")
+    wordsDicts = reviewData["filtered_text"][0]["list"]
+    wordsList = " ".join([d["element"] for d in wordsDicts])
 
+#    wordsList = reviewData["filtered_text"][0].replace("[","").replace("]","")
+#
     wordcloud = WordCloud(width=1600, height=1100,background_color=None,mode="RGBA").generate(wordsList)
 
     st.markdown("#### Most Commmon Words on Reviews")

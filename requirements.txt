@@ -1,9 +1,11 @@
 python-dotenv
 numpy
 pandas
+pandas-gbq
 matplotlib
 plotly
 streamlit
 streamlit-searchbox
 st-annotated-text
 wordcloud
+google-cloud-bigquery
