@@ -1,5 +1,21 @@
 import pandas_gbq
 import streamlit as st
+from google.oauth2 import service_account
+
+credentials = service_account.Credentials.from_service_account_info(
+    {
+        "type": st.secrets.connections.gcs.type,
+        "project_id": st.secrets.connections.gcs.project_id,
+        "private_key_id": st.secrets.connections.gcs.private_key_id,
+        "private_key": st.secrets.connections.gcs.private_key,
+        "client_email": st.secrets.connections.gcs.client_email,
+        "client_id": st.secrets.connections.gcs.client_id,
+        "auth_uri": st.secrets.connections.gcs.auth_uri,
+        "token_uri": st.secrets.connections.gcs.token_uri,
+        "auth_provider_x509_cert_url": st.secrets.connections.gcs.auth_provider_x509_cert_url,
+        "client_x509_cert_url": st.secrets.connections.gcs.client_x509_cert_url
+    },
+)
 
 def getRandomBusinessId():
 
@@ -9,7 +25,7 @@ def getRandomBusinessId():
         ORDER BY RAND()
         LIMIT 1
     """
-    return pandas_gbq.read_gbq(query)["business_id"][0]
+    return pandas_gbq.read_gbq(query, credentials = credentials)["business_id"][0]
 
 @st.cache_data
 def getBusinessNames():
@@ -21,7 +37,7 @@ def getBusinessNames():
     """
         #WHERE b.name LIKE '%{search_query}%'
 
-    return pandas_gbq.read_gbq(query)
+    return pandas_gbq.read_gbq(query, credentials = credentials)
 
 def getBusinessData(business_id):
 
@@ -39,7 +55,7 @@ def getBusinessData(business_id):
         WHERE b.business_id = '{business_id}'
     """
 
-    return pandas_gbq.read_gbq(query.format(business_id = business_id))
+    return pandas_gbq.read_gbq(query.format(business_id = business_id), credentials = credentials)
 
 def getReviewData(business_id):
 
@@ -52,7 +68,7 @@ def getReviewData(business_id):
         WHERE b.business_id = '{business_id}'
     """
 
-    return pandas_gbq.read_gbq(query.format(business_id = business_id))
+    return pandas_gbq.read_gbq(query.format(business_id = business_id), credentials = credentials)
 
 def getCheckinData(business_id):
 
@@ -80,7 +96,7 @@ def getCheckinData(business_id):
         ORDER BY c.date DESC
     """
 
-    return pandas_gbq.read_gbq(query.format(business_id = business_id))
+    return pandas_gbq.read_gbq(query.format(business_id = business_id), credentials = credentials)
 
 def getTipData(business_id):
 
@@ -92,7 +108,7 @@ def getTipData(business_id):
         WHERE b.business_id = '{business_id}'
     """
 
-    return pandas_gbq.read_gbq(query.format(business_id = business_id))
+    return pandas_gbq.read_gbq(query.format(business_id = business_id), credentials = credentials)
 
 def getFrequentCustomersData(business_id):
 
@@ -110,7 +126,7 @@ def getFrequentCustomersData(business_id):
         ORDER BY f.count DESC
     """
 
-    return pandas_gbq.read_gbq(query.format(business_id = business_id))
+    return pandas_gbq.read_gbq(query.format(business_id = business_id), credentials = credentials)
 
 def getReviewsDistribution(business_id):
     query = """
@@ -125,5 +141,5 @@ def getReviewsDistribution(business_id):
     GROUP BY r1.stars, g.count
     """
 
-    return pandas_gbq.read_gbq(query.format(business_id = business_id))
+    return pandas_gbq.read_gbq(query.format(business_id = business_id), credentials = credentials)
 

@@ -9,3 +9,4 @@ streamlit-searchbox
 st-annotated-text
 wordcloud
 google-cloud-bigquery
+google-auth
