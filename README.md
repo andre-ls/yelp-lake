@@ -44,3 +44,4 @@ The application can be acessed [here](https://andre-ls-yelp-lake-appyelp-app-fn4
 - The Review Data contains the full text of each user review, which could be a potential dataset for NLP applications and Sentiment Analysis.
 - The User Data contains data about User Friends, which could be converted to a Graph Dataset that could feed a robust Recomendation System.
 - The performance on the Streamlit dashboard, despite not being the main focus of this project, is not good enough for a pleasant user experience, so trying to optmize it on the code somehow or changing the visualization tool to a better one could also be a desired next step for improving the project.
+
