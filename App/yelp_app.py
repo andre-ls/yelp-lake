@@ -147,7 +147,7 @@ with col3:
     st.markdown("#### Most Commmon Words on Reviews")
     fig = plt.figure(figsize=(25,25),frameon=False)
     plt.axis("off")
-    plt.imshow(wordcloud, interpolation='catrom')
+    plt.imshow(wordcloud.to_image(), interpolation='catrom')
     st.pyplot(fig)
 
     st.markdown("#### Top 10 Most Frequent Customers")
